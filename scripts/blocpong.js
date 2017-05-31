@@ -16,7 +16,7 @@ function Paddle(x, y, width, height, speed) {
     this.speed = speed;
 }
 
-function Ball(x, y, width, height, speedx, speedy){
+function Ball(x, y, width, height, speedx, speedy) {
     this.ballx = x;
     this.bally = y;
     this.width = width;
@@ -40,9 +40,17 @@ Paddle.prototype.render = function() {
 Paddle.prototype.move = function(key) {
     var keypress = key.keyCode;
     if (keypress == 38 && this.paddley > 0) {
-        this.paddley = this.paddley - this.speed;
+        this.paddley -= this.speed;
     } else if (keypress === 40 && this.paddley < 380) {
-        this.paddley = this.paddley + this.speed;
+        this.paddley += this.speed;
+    }
+};
+
+Paddle.prototype.update = function(ball) {
+    if (ball.bally < this.paddley) {
+        this.paddley-=this.speed;
+    } else if (ball.bally > (this.paddley+80)){
+        this.paddley+=this.speed;
     }
 };
 
@@ -52,38 +60,49 @@ Ball.prototype.render = function() {
     context.fillRect(this.ballx, this.bally, this.width, this.height);
 };
 
-var canvas = new Canvas(0,0,640,480);
-var player = new Paddle(10,190,20,100,10);
-var computer = new Paddle(610,190,20,100,5);
-var ball = new Ball(320,240,20,20,(Math.floor(Math.random()*10)-5),Math.floor(Math.random()*10)-5);
-
-
-var collision = function(ball, computer, player) {
-    if (ball.ballx <=-20 || ball.ballx >=700) {
-        ball.speedx = (Math.floor(Math.random()*10)-5);
-        ball.speedy = (Math.floor(Math.random()*10)-5);
-        ball.ballx = 320;
-        ball.bally = 240;
-    } else if (ball.ballx < computer.paddlex + computer.width &&
-        ball.ballx + ball.width > computer.paddlex &&
-        ball.bally < computer.paddley + computer.height &&
-        ball.height + ball.bally > computer.paddley){
-        ball.speedx *= -1;
-    } else if (ball.ballx < player.paddlex + player.width &&
-        ball.ballx + ball.width > player.paddlex &&
-        ball.bally < player.paddley + player.height &&
-        ball.height + ball.bally > player.paddley){
-        ball.speedx *= -1;
-    } else if (ball.bally <= 0 || ball.bally >= 460) {
-        ball.speedy *= -1;
-    } 
-};
-
 Ball.prototype.serve = function() {
     this.ballx += this.speedx;
     this.bally += this.speedy;
-    collision(ball, computer, player);
+    this.collision(player, computer);
 };
+
+Ball.prototype.collision = function(player, computer) {
+        if (this.ballx < player.paddlex  + player.width  &&
+            this.ballx + this.width > player.paddlex &&
+            this.bally < player.paddley + player.height &&
+            this.height + this.bally > player.paddley) {
+            this.speedx *= -1;
+            this.speedx += 1;
+        } else if (this.ballx < computer.paddlex  + computer.width  &&
+            this.ballx + this.width > computer.paddlex &&
+            this.bally < computer.paddley + computer.height &&
+            this.height + this.bally > computer.paddley) {
+            this.speedx *= -1;
+            this.speedx -= 1;
+        } else if (this.bally <= 0 || this.bally >= 460) {
+            this.speedy *= -1;
+        } else if (this.ballx < -10) {
+            computerscore++
+            this.ballx=320;
+            this.bally=240;
+            this.speedx=(Math.floor(Math.random()*10)-5)
+            this.speedy=(Math.floor(Math.random()*10)-5)
+        } else if (this.ballx > 700) {
+            playerscore++
+            this.ballx=320;
+            this.bally=240;
+            this.speedx=(Math.floor(Math.random()*10)-5)
+            this.speedy=(Math.floor(Math.random()*10)-5)
+        }
+};
+
+var canvas = new Canvas(0,0,640,480);
+var player = new Paddle(10,190,20,100,20);
+var computer = new Paddle(610,190,20,100,3);
+var ball = new Ball(320,240,20,20,(Math.floor(Math.random()*10)-5),(Math.floor(Math.random()*10)-5));
+var playerscore = 0;
+var computerscore = 0;
+
 
 var render = function() {
     canvas.render();
@@ -98,7 +117,8 @@ var animate = window.requestAnimationFrame ||
 function step(){
     render();
     animate(step);
-    ball.serve()
+    ball.serve();
+    computer.update(ball);
 }
 
 var moveplayer = function(key) {
