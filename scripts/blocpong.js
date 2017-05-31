@@ -66,43 +66,43 @@ Ball.prototype.serve = function() {
     this.collision(player, computer);
 };
 
+var playerscore = 0;
+var computerscore = 0; 
 Ball.prototype.collision = function(player, computer) {
-        if (this.ballx < player.paddlex  + player.width  &&
+    
+    if (this.ballx < player.paddlex  + player.width  &&
             this.ballx + this.width > player.paddlex &&
             this.bally < player.paddley + player.height &&
             this.height + this.bally > player.paddley) {
             this.speedx *= -1;
             this.speedx += 1;
-        } else if (this.ballx < computer.paddlex  + computer.width  &&
+    } else if (this.ballx < computer.paddlex  + computer.width  &&
             this.ballx + this.width > computer.paddlex &&
             this.bally < computer.paddley + computer.height &&
             this.height + this.bally > computer.paddley) {
             this.speedx *= -1;
             this.speedx -= 1;
-        } else if (this.bally <= 0 || this.bally >= 460) {
+    } else if (this.bally <= 0 || this.bally >= 460) {
             this.speedy *= -1;
-        } else if (this.ballx < -10) {
-            computerscore++
+    } else if (this.ballx < 0) {
+            document.getElementById("computerscore").innerHTML = (computerscore +=1);
+            this.ballx=320;
+            this.bally=240;
+            this.speedx=(Math.floor(Math.random()*10)-5);
+            this.speedy=(Math.floor(Math.random()*10)-5);
+    } else if (this.ballx > 680) {
+            document.getElementById("playerscore").innerHTML = (playerscore += 1);
             this.ballx=320;
             this.bally=240;
             this.speedx=(Math.floor(Math.random()*10)-5)
             this.speedy=(Math.floor(Math.random()*10)-5)
-        } else if (this.ballx > 700) {
-            playerscore++
-            this.ballx=320;
-            this.bally=240;
-            this.speedx=(Math.floor(Math.random()*10)-5)
-            this.speedy=(Math.floor(Math.random()*10)-5)
-        }
+    }
 };
 
 var canvas = new Canvas(0,0,640,480);
 var player = new Paddle(10,190,20,100,20);
 var computer = new Paddle(610,190,20,100,3);
 var ball = new Ball(320,240,20,20,(Math.floor(Math.random()*10)-5),(Math.floor(Math.random()*10)-5));
-var playerscore = 0;
-var computerscore = 0;
-
 
 var render = function() {
     canvas.render();

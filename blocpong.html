@@ -1,5 +1,12 @@
 <!DOCTYPE html>
+<head>
+    <link href='https://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
+</head>
 <body>
-    <canvas id='pong' width='640' height='480'></canvas>
+    <canvas style="postition:absolute" id='pong' width='640' height='480'></canvas>
     <script src='scripts/blocpong.js'></script>
+    <div style="position:relative;top:-70px;width:640px">
+        <p id="playerscore" style="font-size:200%;display:inline;float:left;font-family:Orbitron;">0</p>
+        <p id="computerscore" style="font-size:200%;display:inline;font-family:Orbitron; float:right;">0</p>
+    </div>
 </body>
