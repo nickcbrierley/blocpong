@@ -61,48 +61,71 @@ Ball.prototype.render = function() {
 };
 
 Ball.prototype.serve = function() {
+    if( this.speedx === 0 || this.speedy === 0) {
+        this.speedx += 1;
+        this.speedy += 1;
+    }
     this.ballx += this.speedx;
     this.bally += this.speedy;
     this.collision(player, computer);
 };
 
+Ball.prototype.end = function() {
+    this.ballx=320;
+    this.bally=240;
+    this.speedx=null;
+    this.speedy=null;
+};
+
+Ball.prototype.reset = function() {
+    this.ballx=320;
+    this.bally=240;
+    this.speedy= Math.floor(Math.random()*10)-5;
+    this.speedx= Math.floor(Math.random()*10)-5;
+};
+
 var playerscore = 0;
 var computerscore = 0; 
+
 Ball.prototype.collision = function(player, computer) {
-    
-    if (this.ballx < player.paddlex  + player.width  &&
-            this.ballx + this.width > player.paddlex &&
-            this.bally < player.paddley + player.height &&
-            this.height + this.bally > player.paddley) {
-            this.speedx *= -1;
-            this.speedx += 1;
-    } else if (this.ballx < computer.paddlex  + computer.width  &&
-            this.ballx + this.width > computer.paddlex &&
-            this.bally < computer.paddley + computer.height &&
-            this.height + this.bally > computer.paddley) {
-            this.speedx *= -1;
-            this.speedx -= 1;
+    var x = this.ballx;
+    var y = this.bally;
+    var py = player.paddley;
+    var px = player.paddlex;
+    var cx = computer.paddlex;
+    var cy = computer.paddley;
+
+    if (x < px + player.width  && x + this.width > px && y < py + player.height && this.height + y > py) {
+        this.speedx *= -1;
+        this.speedx += 1;
+    } else if (x < cx  + computer.width  && x + this.width > cx && y < cy + computer.height && this.height + y > cy) {
+        this.speedx *= -1;
+        this.speedx -= 1;
     } else if (this.bally <= 0 || this.bally >= 460) {
-            this.speedy *= -1;
+        this.speedy *= -1;
     } else if (this.ballx < 0) {
-            document.getElementById("computerscore").innerHTML = (computerscore +=1);
-            this.ballx=320;
-            this.bally=240;
-            this.speedx=(Math.floor(Math.random()*10)-5);
-            this.speedy=(Math.floor(Math.random()*10)-5);
+        document.getElementById("computerscore").innerHTML = (computerscore +=1);
+        if (computerscore >= 11) {
+            document.getElementById('loser').style.visibility = 'visible';
+            this.end();
+        } else {
+            this.reset();
+        }
     } else if (this.ballx > 680) {
-            document.getElementById("playerscore").innerHTML = (playerscore += 1);
-            this.ballx=320;
-            this.bally=240;
-            this.speedx=(Math.floor(Math.random()*10)-5)
-            this.speedy=(Math.floor(Math.random()*10)-5)
+        document.getElementById("playerscore").innerHTML = (playerscore += 1);
+        if (playerscore >= 11) {
+            document.getElementById('winner').style.visibility = 'visible';
+            this.end();
+        } else {
+            this.reset();
+        }
     }
 };
 
 var canvas = new Canvas(0,0,640,480);
 var player = new Paddle(10,190,20,100,20);
 var computer = new Paddle(610,190,20,100,3);
-var ball = new Ball(320,240,20,20,(Math.floor(Math.random()*10)-5),(Math.floor(Math.random()*10)-5));
+var ball = new Ball(320,240,20,20,Math.floor(Math.random()*10)-5,this.speedy= Math.floor(Math.random()*10)-5);
 
 var render = function() {
     canvas.render();

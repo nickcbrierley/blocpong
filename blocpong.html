@@ -3,10 +3,20 @@
     <link href='https://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
 </head>
 <body>
-    <canvas style="postition:absolute" id='pong' width='640' height='480'></canvas>
+    <canvas id='pong' width='640' height='480'></canvas>
     <script src='scripts/blocpong.js'></script>
     <div style="position:relative;top:-70px;width:640px">
         <p id="playerscore" style="font-size:200%;display:inline;float:left;font-family:Orbitron;">0</p>
         <p id="computerscore" style="font-size:200%;display:inline;font-family:Orbitron; float:right;">0</p>
+    </div>
+    <div style="position:relative;font-family:Orbitron;top:-310px;left:200px;">
+        <div id="loser" style="position:absolute;visibility:hidden;">
+            <h1>You Lose!</h1>
+            <p>Refresh to play again</p>
+        </div>
+        <div id='winner' style="position:absolute;visibility:hidden;left:10px;">
+            <h1>You Win!</h1>
+            <p>Refreshto play again</p>
+        </div>
     </div>
 </body>
